@@ -19,6 +19,7 @@ text_extractor = TextExtractionApp()
 # Create a Tkinter window for displaying the text
 root = tk.Tk()
 root.title("Text Extraction")
+root.geometry("600x400+50+50")
 result_label = tk.Label(root, text="", wraplength=400)
 result_label.pack(padx=10, pady=10)
 
@@ -31,7 +32,7 @@ while True:
         screenshot.save("captureimg/window_capture.png")
 
         # Call the extract_text_from_image method to extract text from the saved image
-        extracted_text = text_extractor.extract_text_from_image()
+        extracted_text = "Original text : " + text_extractor.extract_text_from_image()
 
         # Display the extracted text in the Tkinter window
         result_label.config(text=extracted_text)
