@@ -33,8 +33,8 @@ class AreaSelector:
         self.info_label.pack()
 
         # Create the capture button on the main window
-        self.capture_button = tk.Button(self.root, text="Capture", command=self.capture_area)
-        self.capture_button.pack()
+        #self.capture_button = tk.Button(self.root, text="Capture", command=self.capture_area)
+        #self.capture_button.pack()
 
         # Create the reselect button on the main window
         self.reselect_button = tk.Button(self.root, text="Reselect", command=self.reselect_area)
