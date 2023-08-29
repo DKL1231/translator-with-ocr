@@ -21,7 +21,7 @@ class AreaSelector:
         # Create a transparent top-level window for area selection
         self.selection_window = tk.Toplevel(self.root)
         self.selection_window.overrideredirect(1)  # Remove window decorations
-        self.selection_window.attributes("-alpha", 0.5)  # Set transparency level (0.0 to 1.0)
+        self.selection_window.attributes("-alpha", 0.8)  # Set transparency level (0.0 to 1.0)
         self.selection_window.geometry(f"{self.screen_width}x{self.screen_height}")  # Set window size to full screen
 
         # Create a canvas for mouse interaction on the selection window

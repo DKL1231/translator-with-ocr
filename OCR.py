@@ -8,7 +8,7 @@ import os
 
 class TextExtractionApp:
     def __init__(self):
-        pass
+        self.language = 'jpn' # default : japanese
 
     def extract_text_from_image(self):
         path = os.getcwd() + '\\captureimg\\'
@@ -16,5 +16,8 @@ class TextExtractionApp:
         image_path = path+filename
         img = Image.open(image_path)
 
-        text = pytesseract.image_to_string(img, config='-l jpn')
+        text = pytesseract.image_to_string(img, config='-l '+self.language)
         return text
+    
+    def setLanguage(self, language):
+        self.language = language
