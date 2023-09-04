@@ -48,8 +48,8 @@ class ResizableWindow:
         x, y = event.x_root - self.prev_x, event.y_root - self.prev_y
         self.root.geometry(f"+{x}+{y}")
         
-        self.x += event.x_root - self.prev_x
-        self.y += event.y_root - self.prev_y
+        self.x = x
+        self.y = y
 
     def on_right_click(self, event):
         self.context_menu.post(event.x_root, event.y_root)

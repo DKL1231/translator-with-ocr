@@ -26,7 +26,6 @@ window_selection_thread.start()
 # Wait for the window selection thread to finish
 #window_selection_thread.join()
 time.sleep(3)
-print(x, y, width, height)
 
 # Create an instance of TextExtractionApp
 text_extractor = TextExtractionApp()
@@ -40,7 +39,6 @@ result_label.pack(padx=10, pady=10)
 
 while True:
     # Capture the window screenshot in memory
-    print(x,y,width,height)
     screenshot = pyautogui.screenshot(region=(x, y, width, height))
     screenshot.save("captureimg/window_capture.png")
 

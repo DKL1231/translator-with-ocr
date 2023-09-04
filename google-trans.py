@@ -12,7 +12,7 @@ class googletranslator:
         text = self.CustomDict.sentenceProcessing(text)
         print(text)
         result = self.translator.translate(text, src=self.src, dest=self.dest)
-        print(result)
+        return result.text
     
     def setLanguage(self, src, dest):
         self.src = src
@@ -22,4 +22,4 @@ class googletranslator:
 if __name__ == "__main__":
     translator = googletranslator()
     print(translator.translate("天ちゃんがめぐるちゃんに向けて言った。"))
-    
+     
