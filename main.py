@@ -37,18 +37,11 @@ time.sleep(3)
 window_trans_thread = threading.Thread(target=main_window_thread)
 window_trans_thread.start()
 
-'''
-# Create a Tkinter window for displaying the text
-root = tk.Tk()
-root.title("Text Extraction")
-root.geometry("600x400+50+50")
-result_label = tk.Label(root, text="", wraplength=400)
-result_label.pack(padx=10, pady=10)
-'''
-
 # Create an instance of TextExtractionApp
 text_extractor = TextExtractionApp()
 translator = googletranslator.googletranslator()
+
+before_text = ""
 while True:
     # Capture the window screenshot in memory
     screenshot = pyautogui.screenshot(region=(x, y, width, height))
@@ -59,14 +52,12 @@ while True:
     if origin_text is None:
         origin_text = ""
     # Display the extracted text in the Tkinter window
-    root.input_origin(origin_text)
-    print(origin_text)
-    
-    trans_text = translator.translate(origin_text)
-    root.input_trans(trans_text)
+    if before_text != origin_text:
+        before_text = origin_text
+        root.input_origin(origin_text)
 
-    # Update the Tkinter window
-    #root.update()
+        trans_text = translator.translate(origin_text)
+        root.input_trans(trans_text)
     
     # Adjust the sleep time to control the capture frequency
     time.sleep(0.3)

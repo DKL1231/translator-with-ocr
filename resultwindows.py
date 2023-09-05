@@ -14,7 +14,7 @@ class resultwindows:
         pad_y = 30
         
         self.origin_info = tk.Label(self.root, text="Original Text")
-        self.origin_info.grid(row=0, padx=(pad_x, pad_x))
+        self.origin_info.grid(row=0, padx=(pad_x, pad_x), pady=(pad_y, 0))
         
         self.origintext = tk.Text(self.root, width=80, height=8)
         self.origintext.config(state="disabled")
@@ -29,7 +29,7 @@ class resultwindows:
         
         self.disableValue = True
         self.disablebutton = tk.Checkbutton(self.root, text="Disable Original Text", variable=self.disableValue,command=self.disable_origin)
-        self.disablebutton.grid(row=4, padx=(pad_x, pad_x), pady=(pad_y, pad_y))
+        self.disablebutton.grid(row=4, padx=(pad_x, pad_x), pady=(0, pad_y))
         
     
     def input_trans(self, text):
