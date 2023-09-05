@@ -9,8 +9,9 @@ class googletranslator:
         self.CustomDict = CustomDict.CustomDict()
     
     def translate(self, text):
+        if text == "":
+            return ""
         text = self.CustomDict.sentenceProcessing(text)
-        print(text)
         result = self.translator.translate(text, src=self.src, dest=self.dest)
         return result.text
     

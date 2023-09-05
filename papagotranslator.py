@@ -33,6 +33,8 @@ class papagotranslator:
         self.data['target'] = target
     
     def translate(self, text):
+        if text == "":
+            return ""
         self.text = text
         self.data['text'] = self.text
         

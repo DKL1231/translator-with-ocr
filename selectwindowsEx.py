@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import Menu, Toplevel, messagebox
 from tkinter.colorchooser import askcolor
+from PIL import ImageTk
 
 class ResizableWindow:
     def __init__(self):
@@ -64,6 +65,8 @@ class ResizableWindow:
         settings_window = Toplevel(self.root)
         settings_window.title("Settings")
         settings_window.geometry("300x150+100+100")
+        icon = ImageTk.PhotoImage(file="icon\\icon1.jpg")
+        settings_window.iconphoto(False, icon)
         padding_y = 5
         
         alpha_label = tk.Label(settings_window, text="Alpha Level (0.0 - 1.0):")

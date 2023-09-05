@@ -23,7 +23,7 @@ class CustomDict:
             
             if not origin in self.CustomDict:
                 self.CustomDict[origin] = trans
-            print(origin, self.CustomDict[origin])
+            #print(origin, self.CustomDict[origin])
 
     
     def sentenceProcessing(self, sentence):
