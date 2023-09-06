@@ -12,7 +12,10 @@ class googletranslator:
         if text == "":
             return ""
         text = self.CustomDict.sentenceProcessing(text)
-        result = self.translator.translate(text, src=self.src, dest=self.dest)
+        try:
+            result = self.translator.translate(text, src=self.src, dest=self.dest)
+        except:
+            return ""
         return result.text
     
     def setLanguage(self, src, dest):

@@ -26,7 +26,7 @@ class ResizableWindow:
         self.context_menu.add_command(label="Settings", command=self.open_settings_window)
 
         # Set the window size and position
-        window_width, window_height = 400, 300
+        window_width, window_height = 900, 200
         screen_width, screen_height = self.root.winfo_screenwidth(), self.root.winfo_screenheight()
         x, y = (screen_width - window_width) // 2, (screen_height - window_height) // 2
         self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")

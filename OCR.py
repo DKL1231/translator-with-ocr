@@ -6,6 +6,8 @@ import pytesseract
 from PIL import Image
 import os
 
+tesseract_lang = {'en':'eng', 'jp':'jpn', 'ko':'kor'}
+
 class TextExtractionApp:
     def __init__(self):
         self.language = 'jpn' # default : japanese
@@ -20,4 +22,4 @@ class TextExtractionApp:
         return text
     
     def setLanguage(self, language):
-        self.language = language
+        self.language = tesseract_lang[language]

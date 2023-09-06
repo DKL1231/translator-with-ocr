@@ -1,5 +1,5 @@
 import pyautogui
-from OCR import TextExtractionApp
+import ezOCR
 import tkinter as tk
 import selectwindowsEx
 import resultwindows
@@ -38,19 +38,37 @@ window_trans_thread = threading.Thread(target=main_window_thread)
 window_trans_thread.start()
 
 # Create an instance of TextExtractionApp
-text_extractor = TextExtractionApp()
+text_extractor = ezOCR.TextExtractionApp()
 translator = googletranslator.googletranslator()
 
 before_text = ""
+trans_from, trans_to = translator.src, translator.dest
 while True:
     # Capture the window screenshot in memory
     screenshot = pyautogui.screenshot(region=(x, y, width, height))
     screenshot.save("captureimg/window_capture.png")
 
+    if (trans_from, trans_to) != root.return_combobox():
+        trans_from, trans_to = root.return_combobox()
+        translator.setLanguage(trans_from, trans_to)
+        text_extractor.setLanguage(trans_from)
+        before_text = ""
+        print(trans_from, trans_to)
+    
+    
+    
     # Call the extract_text_from_image method to extract text from the saved image
     origin_text = text_extractor.extract_text_from_image()
-    if origin_text is None:
-        origin_text = ""
+    if origin_text == []:
+        origin_text = [""]
+    if len(origin_text[0])<10:
+        if len(origin_text) > 1:
+            origin_text = origin_text[0]+"\n"+" ".join(origin_text[1:])
+        else:
+            origin_text = origin_text[0]
+    else:
+        origin_text = " ".join(origin_text)
+    
     # Display the extracted text in the Tkinter window
     if before_text != origin_text:
         before_text = origin_text

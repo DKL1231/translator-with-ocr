@@ -1,7 +1,7 @@
 class CustomDict:
     def __init__(self):
         self.filename = "CustomDict/CustomDict.txt"
-        self.encoding = 'cp949'
+        self.encoding = 'UTF-8'
         self.Dictfile = None
         self.CustomDict = {}
         self.updateDict()
