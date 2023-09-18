@@ -53,7 +53,6 @@ while True:
         translator.setLanguage(trans_from, trans_to)
         text_extractor.setLanguage(trans_from)
         before_text = ""
-        print(trans_from, trans_to)
     
     
     

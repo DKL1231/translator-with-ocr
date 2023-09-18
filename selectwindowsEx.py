@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import Menu, Toplevel, messagebox
 from tkinter.colorchooser import askcolor
 from PIL import ImageTk
+from tkinter import ttk
 
 class ResizableWindow:
     def __init__(self):
@@ -72,12 +73,9 @@ class ResizableWindow:
         alpha_label = tk.Label(settings_window, text="Alpha Level (0.0 - 1.0):")
         alpha_label.pack()
         
-        alpha_entry = tk.Entry(settings_window)
-        alpha_entry.pack()
-        
-        def apply_alpha():
+        def apply_alpha(event):
             try:
-                alpha = float(alpha_entry.get())
+                alpha = alpha_slider.get()
                 if 0 <= alpha <= 1:
                     self.set_alpha(alpha)
                 else:
@@ -85,8 +83,15 @@ class ResizableWindow:
             except ValueError:
                 messagebox.showerror("Invalid Value", "Please enter a valid number for Alpha")
 
-        apply_button = tk.Button(settings_window, text="Apply Alpha", command=apply_alpha)
-        apply_button.pack(pady=padding_y)
+        alpha_slider = ttk.Scale(
+            settings_window,
+            from_ = 0,
+            to = 1,
+            orient = 'horizontal',
+            command=apply_alpha
+        )
+        alpha_slider.pack(pady=padding_y)
+        alpha_slider.set(self.alpha)
 
         size_label = tk.Label(settings_window, text="Window Size (WxH):")
         size_label.pack()
