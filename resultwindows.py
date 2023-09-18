@@ -13,6 +13,7 @@ class resultwindows:
         #self.root.iconphoto(False, icon)
         self.pad_x = 15
         self.pad_y = 30
+        #self.defaultfont = ('TkDefaultFont', 10)
         
         # OriginText Output
         self.origin_info = tk.Label(self.root, text="Original Text")
@@ -39,6 +40,13 @@ class resultwindows:
         self.combobox_frame = tk.LabelFrame(self.root, text="select language")
         self.combobox_frame.grid(row=5)
         
+        self.font_size_list = ["10", "12", "14", "16", "18", "20"]
+        self.font_window_size = {"10":(80, 8), "12":(70, 6), "14":(56, 5), "16":(51, 5), "18":(43, 4), "20":(35, 4)}
+        self.combobox_font_size = ttk.Combobox(self.combobox_frame, height=5, values=self.font_size_list, state="readonly")
+        self.combobox_font_size.current(0)
+        self.combobox_font_size.grid(row=2, column=1, padx=(self.pad_x, self.pad_x), pady=(self.pad_y, self.pad_y))
+        self.combobox_font_size.bind("<<ComboboxSelected>>", self.font_change)
+        
         self.from_lang_list = ['korean', 'japanese', 'english']
         to_lang_list = list(googletrans.LANGUAGES.values())
         self.combobox_from = ttk.Combobox(self.combobox_frame, height=5, values=self.from_lang_list, state="readonly")
@@ -51,6 +59,13 @@ class resultwindows:
         self.combobox_to = ttk.Combobox(self.combobox_frame, height=5, values=to_lang_list, state="readonly")
         self.combobox_to.current(to_lang_list.index('korean'))
         self.combobox_to.grid(row=1, column=3, padx=(self.pad_x, self.pad_x), pady=(self.pad_y, self.pad_y))
+    
+    def font_change(self, event):
+        font_size = event.widget.get()
+        window_size = self.font_window_size[font_size]
+        
+        self.origintext.config(width = window_size[0], height = window_size[1] ,font=('TkDefaultFont', int(font_size)))
+        self.transtext.config(width = window_size[0], height = window_size[1] ,font=('TkDefaultFont', int(font_size)))
     
     def input_trans(self, text):
         self.transtext.config(state="normal")
@@ -94,4 +109,6 @@ class resultwindows:
 if __name__ == "__main__":
     window = resultwindows()
     print(window.return_combobox())
+    window.input_origin("abcd")
+    window.input_trans("ㅁㄴㅇㄹ")
     window.start()
