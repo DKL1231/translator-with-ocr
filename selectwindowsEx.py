@@ -3,6 +3,7 @@ from tkinter import Menu, Toplevel, messagebox
 from tkinter.colorchooser import askcolor
 from PIL import ImageTk
 from tkinter import ttk
+from pynput import keyboard
 
 class ResizableWindow:
     def __init__(self):
@@ -12,7 +13,9 @@ class ResizableWindow:
         self.alpha = 0.4
         self.root.attributes("-alpha", self.alpha)
         self.prev_x, self.prev_y = None, None
-
+        
+        self.listener = keyboard.Listener(on_press=self.on_press)
+        self.listener.start()
         
         # Create a canvas to capture mouse events
         self.canvas = tk.Canvas(self.root, bg="white")
@@ -61,6 +64,16 @@ class ResizableWindow:
 
     def set_alpha(self, alpha):
         self.root.attributes("-alpha", alpha)
+        self.alpha = alpha
+        self.root.update_idletasks()
+
+    def on_press(self, key):
+        try:
+            if key.char == 's':
+                self.alpha = 0.4
+                self.set_alpha(0.4)
+        except:
+            pass
 
     def open_settings_window(self):
         settings_window = Toplevel(self.root)
@@ -72,16 +85,11 @@ class ResizableWindow:
         
         alpha_label = tk.Label(settings_window, text="Alpha Level (0.0 - 1.0):")
         alpha_label.pack()
-        
+        alpha_emergency = tk.Label(settings_window, text="When you cannot find window, press s")
+        alpha_emergency.pack()
         def apply_alpha(event):
-            try:
-                alpha = alpha_slider.get()
-                if 0 <= alpha <= 1:
-                    self.set_alpha(alpha)
-                else:
-                    messagebox.showerror("Invalid Value", "Alpha must be between 0.0 and 1.0")
-            except ValueError:
-                messagebox.showerror("Invalid Value", "Please enter a valid number for Alpha")
+            alpha = alpha_slider.get()
+            self.set_alpha(alpha)
 
         alpha_slider = ttk.Scale(
             settings_window,
@@ -133,11 +141,10 @@ class ResizableWindow:
 
     def start(self):
         # Start the Tkinter main loop
-        self.root.update_idletasks()
-        self.root.update()
-        #self.root.mainloop()
+        #self.root.update_idletasks()
+        #self.root.update()
+        self.root.mainloop()
 
 if __name__ == "__main__":
     window = ResizableWindow()
-    while True:
-        window.start()
+    window.start()
