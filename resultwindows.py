@@ -7,7 +7,7 @@ class resultwindows:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Translated text")
-        self.root.geometry("600x600+50+50")
+        self.root.geometry("600x700")
         # 여기서 실행할땐 잘 되는데 main에서 하면 런타임에러남;
         #icon = ImageTk.PhotoImage(file="icon\\icon1.jpg")
         #self.root.iconphoto(False, icon)
@@ -38,15 +38,8 @@ class resultwindows:
         
         # LanguageSelect Combobox
         self.combobox_frame = tk.LabelFrame(self.root, text="select language")
-        self.combobox_frame.grid(row=5)
-        
-        self.font_size_list = ["10", "12", "14", "16", "18", "20"]
-        self.font_window_size = {"10":(80, 8), "12":(70, 6), "14":(56, 5), "16":(51, 5), "18":(43, 4), "20":(35, 4)}
-        self.combobox_font_size = ttk.Combobox(self.combobox_frame, height=5, values=self.font_size_list, state="readonly")
-        self.combobox_font_size.current(0)
-        self.combobox_font_size.grid(row=2, column=1, padx=(self.pad_x, self.pad_x), pady=(self.pad_y, self.pad_y))
-        self.combobox_font_size.bind("<<ComboboxSelected>>", self.font_change)
-        
+        self.combobox_frame.grid(row=5, pady=(0, self.pad_y))
+             
         self.from_lang_list = ['korean', 'japanese', 'english']
         to_lang_list = list(googletrans.LANGUAGES.values())
         self.combobox_from = ttk.Combobox(self.combobox_frame, height=5, values=self.from_lang_list, state="readonly")
@@ -59,6 +52,20 @@ class resultwindows:
         self.combobox_to = ttk.Combobox(self.combobox_frame, height=5, values=to_lang_list, state="readonly")
         self.combobox_to.current(to_lang_list.index('korean'))
         self.combobox_to.grid(row=1, column=3, padx=(self.pad_x, self.pad_x), pady=(self.pad_y, self.pad_y))
+        
+        # FontSelect frame
+        self.font_frame = tk.LabelFrame(self.root, text="select Font")
+        self.font_frame.grid(row=6)
+
+        font_label = tk.Label(self.font_frame, text="Font Size")
+        font_label.grid(row=1)
+        
+        self.font_size_list = ["10", "12", "14", "16", "18", "20"]
+        self.font_window_size = {"10":(80, 8), "12":(70, 6), "14":(56, 5), "16":(51, 5), "18":(43, 4), "20":(35, 4)}
+        self.combobox_font_size = ttk.Combobox(self.font_frame, height=5, values=self.font_size_list, state="readonly")
+        self.combobox_font_size.current(0)
+        self.combobox_font_size.grid(row=2, padx=(self.pad_x, self.pad_x), pady=(0, self.pad_y))
+        self.combobox_font_size.bind("<<ComboboxSelected>>", self.font_change)
     
     def font_change(self, event):
         font_size = event.widget.get()
@@ -84,12 +91,12 @@ class resultwindows:
             self.origin_info.grid_forget()
             self.origintext.grid_forget()
             self.disableValue = False
-            self.root.geometry("600x450")
+            self.root.geometry("600x550")
         else:
             self.origin_info.grid(row=0, padx=(self.pad_x, self.pad_x), pady=(self.pad_y, 0))
             self.origintext.grid(row=1, padx=(self.pad_x, self.pad_x))
             self.disableValue = True
-            self.root.geometry("600x600")
+            self.root.geometry("600x700")
     
     def return_combobox(self):
         lang_from, lang_to = None, None
@@ -105,6 +112,12 @@ class resultwindows:
     
     def start(self):
         self.root.mainloop()
+    
+    def __del__(self):
+        try:
+            self.root.destroy()
+        except:
+            pass
 
 if __name__ == "__main__":
     window = resultwindows()

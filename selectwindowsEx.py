@@ -13,6 +13,7 @@ class ResizableWindow:
         self.alpha = 0.4
         self.root.attributes("-alpha", self.alpha)
         self.prev_x, self.prev_y = None, None
+        self.isStopped = False
         
         self.listener = keyboard.Listener(on_press=self.on_press)
         self.listener.start()
@@ -61,6 +62,7 @@ class ResizableWindow:
 
     def close_window(self):
         self.root.destroy()
+        self.isStopped = True
 
     def set_alpha(self, alpha):
         self.root.attributes("-alpha", alpha)
@@ -79,8 +81,8 @@ class ResizableWindow:
         settings_window = Toplevel(self.root)
         settings_window.title("Settings")
         settings_window.geometry("300x150+100+100")
-        icon = ImageTk.PhotoImage(file="icon\\icon1.jpg")
-        settings_window.iconphoto(False, icon)
+        #icon = ImageTk.PhotoImage(file="icon\\icon1.jpg")
+        #settings_window.iconphoto(False, icon)
         padding_y = 5
         
         alpha_label = tk.Label(settings_window, text="Alpha Level (0.0 - 1.0):")
@@ -141,9 +143,15 @@ class ResizableWindow:
 
     def start(self):
         # Start the Tkinter main loop
-        #self.root.update_idletasks()
-        #self.root.update()
-        self.root.mainloop()
+        self.root.update_idletasks()
+        self.root.update()
+        #self.root.mainloop()
+    
+    def __del__(self):
+        try:
+            self.root.destroy()
+        except:
+            pass
 
 if __name__ == "__main__":
     window = ResizableWindow()
