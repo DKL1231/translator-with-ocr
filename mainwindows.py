@@ -1,3 +1,4 @@
+import pyautogui
 import tkinter as tk
 from tkinter import ttk
 import ezOCR
@@ -14,6 +15,7 @@ class mainwindows:
     def __init__(self):
         self.text_extractor = ezOCR.TextExtractionApp()
         self.translator = googletranslator.googletranslator()
+        self.trans_from, self.trans_to = self.translator.src, self.translator.dest
         self.resultwindow = None
         self.selectwindow = None
         
@@ -22,7 +24,9 @@ class mainwindows:
         self.x, self.y, self.width, self.height = None, None, None, None
         self.selectthread = None
         self.selectthreadcheck = False
-        self.befor_text = ""
+        self.resultthread = None
+        self.mainthread = None
+        self.before_text = ""
         
         self.trans_from, self.trans_to = self.translator.src, self.translator.dest
         self.sleeptime = 0.3
@@ -54,7 +58,7 @@ class mainwindows:
                 
                 index_to_func = {
                     0:self.selectThreadOn,
-                    1:self.openResultWindow
+                    1:self.resultThreadOn
                 }
                 
                 if selected_index in index_to_func:
@@ -83,9 +87,16 @@ class mainwindows:
             self.selectwindow.start()
             time.sleep(self.sleeptime)
     
+    def resultThreadOn(self):
+        self.resultthread = threading.Thread(target=self.openResultWindow)
+        self.resultthread.start()
+        
     def openResultWindow(self):
         if self.resultwindow is None:
             self.resultwindow = resultwindows.resultwindows()
+            self.mainthread = threading.Thread(target=self.mainThread)
+            self.mainthread.start()
+            self.resultwindow.start()
         else:
             try:
                 self.resultwindow.__del__()
@@ -93,10 +104,53 @@ class mainwindows:
                 pass
             finally:
                 self.resultwindow = resultwindows.resultwindows()
+                self.mainthread = threading.Thread(target=self.mainThread)
+                self.mainthread.start()
+                self.resultwindow.start()
     
     def openTranslateSetting(self):
         # 구현예정
         pass
+    
+    def mainThread(self):
+        while True:
+            if self.resultwindow.isStopped:
+                break
+            try:
+                screenshot = pyautogui.screenshot(region=(self.x, self.y, self.width, self.height))
+            except:
+                break
+            screenshot.save("captureimg/window_capture.png")
+
+            if (self.trans_from, self.trans_to) != self.resultwindow.return_combobox():
+                self.trans_from, self.trans_to = self.resultwindow.return_combobox()
+                self.translator.setLanguage(self.trans_from, self.trans_to)
+                self.text_extractor.setLanguage(self.trans_from)
+                self.before_text = ""
+    
+    
+    
+            # Call the extract_text_from_image method to extract text from the saved image
+            origin_text = self.text_extractor.extract_text_from_image()
+            if origin_text == []:
+                origin_text = [""]
+            if len(origin_text[0])<10:
+                if len(origin_text) > 1:
+                    origin_text = origin_text[0]+"\n"+" ".join(origin_text[1:])
+                else:
+                    origin_text = origin_text[0]
+            else:
+                origin_text = " ".join(origin_text)
+
+            # Display the extracted text in the Tkinter window
+            if self.before_text != origin_text:
+                self.before_text = origin_text
+                self.resultwindow.input_origin(origin_text)
+
+                trans_text = self.translator.translate(origin_text)
+                self.resultwindow.input_trans(trans_text)
+            # Adjust the sleep time to control the capture frequency
+            time.sleep(self.sleeptime)
     
     def start(self):
         self.root.mainloop()

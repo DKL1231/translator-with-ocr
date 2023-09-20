@@ -13,7 +13,7 @@ class resultwindows:
         #self.root.iconphoto(False, icon)
         self.pad_x = 15
         self.pad_y = 30
-        #self.defaultfont = ('TkDefaultFont', 10)
+        self.isStopped = False
         
         # OriginText Output
         self.origin_info = tk.Label(self.root, text="Original Text")
@@ -115,6 +115,7 @@ class resultwindows:
     
     def __del__(self):
         try:
+            self.isStopped = True
             self.root.destroy()
         except:
             pass
