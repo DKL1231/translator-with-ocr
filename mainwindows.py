@@ -18,7 +18,7 @@ class mainwindows:
         self.trans_from, self.trans_to = self.translator.src, self.translator.dest
         self.resultwindow = None
         self.selectwindow = None
-        
+        self.transsettingwindow = None
         
         # variables for loop
         self.x, self.y, self.width, self.height = None, None, None, None
@@ -27,6 +27,7 @@ class mainwindows:
         self.resultthread = None
         self.mainthread = None
         self.before_text = ""
+        self.automode = True
         
         self.trans_from, self.trans_to = self.translator.src, self.translator.dest
         self.sleeptime = 0.3
@@ -58,7 +59,8 @@ class mainwindows:
                 
                 index_to_func = {
                     0:self.selectThreadOn,
-                    1:self.resultThreadOn
+                    1:self.resultThreadOn,
+                    2:self.openTranslateSetting
                 }
                 
                 if selected_index in index_to_func:
@@ -110,7 +112,33 @@ class mainwindows:
     
     def openTranslateSetting(self):
         # 구현예정
-        pass
+        try:
+            if self.transsettingwindow:
+                self.transsettingwindow.destroy()
+        except:
+            pass
+        self.transsettingwindow = tk.Tk()
+        self.transsettingwindow.title("TranslateSetting")
+        
+        textmodeLabel = tk.Label(self.transsettingwindow, text="Translate mode Select")
+        textmodeLabel.grid(row=1, column=0, columnspan=2)
+        
+        def mode_change():
+            if textmode.get() == 0:
+                self.automode = True
+            else:
+                self.automode = False
+                
+        
+        textmode = tk.StringVar()
+        
+        automode = ttk.Radiobutton(self.transsettingwindow, text="Auto", variable=textmode, value="Auto", command=mode_change)
+        clickmode = ttk.Radiobutton(self.transsettingwindow, text="Click", variable=textmode, value="Click", command=mode_change)
+        
+        automode.grid(row=2, column=0)
+        clickmode.grid(row=2, column=1)
+        
+        self.transsettingwindow.mainloop()
     
     def mainThread(self):
         while True:
