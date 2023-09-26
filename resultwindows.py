@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import ImageTk
 import googletrans
+from gtts import gTTS
+import playsound
 
 class resultwindows:
     def __init__(self):
@@ -14,6 +16,7 @@ class resultwindows:
         self.pad_x = 15
         self.pad_y = 30
         self.isStopped = False
+        self.origin_text = ''
         
         # OriginText Output
         self.origin_info = tk.Label(self.root, text="Original Text")
@@ -31,19 +34,26 @@ class resultwindows:
         self.transtext.config(state="disabled")
         self.transtext.grid(row=3, padx=(self.pad_x, self.pad_x), pady=(0, self.pad_y))
         
+        origin_option_frame = tk.LabelFrame(self.root, borderwidth=0, highlightthickness=0)
+        origin_option_frame.grid(row=4)
+        
         # OriginText Disable Checkbutton
         self.disableValue = True
-        self.disablebutton = tk.Checkbutton(self.root, text="Disable Original Text", variable=self.disableValue,command=self.disable_origin)
-        self.disablebutton.grid(row=4, padx=(self.pad_x, self.pad_x), pady=(0, self.pad_y))
+        self.disablebutton = tk.Checkbutton(origin_option_frame, text="Disable Original Text", variable=self.disableValue,command=self.disable_origin)
+        self.disablebutton.grid(row=0, column=0, padx=(self.pad_x, self.pad_x), pady=(0, self.pad_y))
+        
+        # TTS Button
+        self.ttsbutton = tk.Button(origin_option_frame, text="OriginText TTS Play", overrelief="solid", command=self.ttsplay)
+        self.ttsbutton.grid(row=0, column=1, padx=(self.pad_x, self.pad_x), pady=(0, self.pad_y))
         
         # LanguageSelect Combobox
         self.combobox_frame = tk.LabelFrame(self.root, text="select language")
         self.combobox_frame.grid(row=5, pady=(0, self.pad_y))
              
-        self.from_lang_list = ['korean', 'japanese', 'english']
+        self.from_lang_list = {'korean':'ko', 'japanese':'ja', 'english':'en'}
         to_lang_list = list(googletrans.LANGUAGES.values())
-        self.combobox_from = ttk.Combobox(self.combobox_frame, height=5, values=self.from_lang_list, state="readonly")
-        self.combobox_from.current(self.from_lang_list.index('japanese'))
+        self.combobox_from = ttk.Combobox(self.combobox_frame, height=5, values=list(self.from_lang_list.keys()), state="readonly")
+        self.combobox_from.current(list(self.from_lang_list.keys()).index('japanese'))
         self.combobox_from.grid(row=1, column=1, padx=(self.pad_x, self.pad_x), pady=(self.pad_y, self.pad_y))
         
         comboboxtext = tk.Label(self.combobox_frame, text="→")
@@ -85,6 +95,7 @@ class resultwindows:
         self.origintext.delete("1.0", tk.END)
         self.origintext.insert(tk.END, text)
         self.origintext.config(state="disabled")
+        self.origin_text = text
     
     def disable_origin(self):
         if self.disableValue:
@@ -110,6 +121,11 @@ class resultwindows:
                 lang_to = key
         return lang_from, lang_to
     
+    def ttsplay(self):
+        tts = gTTS(text=self.origin_text, lang=self.from_lang_list[self.combobox_from.get()])
+        tts.save("playsound/temp.mp3")
+        playsound.playsound("playsound/temp.mp3")
+    
     def start(self):
         self.root.mainloop()
     
@@ -123,6 +139,6 @@ class resultwindows:
 if __name__ == "__main__":
     window = resultwindows()
     print(window.return_combobox())
-    window.input_origin("abcd")
-    window.input_trans("ㅁㄴㅇㄹ")
+    window.input_origin("天ちゃんがめぐるちゃんに向けて言った。")
+    window.input_trans("아메쨩이 메구루짱에게 말했다")
     window.start()
