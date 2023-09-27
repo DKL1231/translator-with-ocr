@@ -4,6 +4,7 @@ from PIL import ImageTk
 import googletrans
 from gtts import gTTS
 import playsound
+import clipboard
 
 class resultwindows:
     def __init__(self):
@@ -42,9 +43,14 @@ class resultwindows:
         self.disablebutton = tk.Checkbutton(origin_option_frame, text="Disable Original Text", variable=self.disableValue,command=self.disable_origin)
         self.disablebutton.grid(row=0, column=0, padx=(self.pad_x, self.pad_x), pady=(0, self.pad_y))
         
+        # Auto Clipboard Checkbutton
+        self.clipboardValue = False
+        self.clipboardbutton = tk.Checkbutton(origin_option_frame, text="Auto Copy", variable=self.clipboardValue)
+        self.clipboardbutton.grid(row=0, column=1, padx=(self.pad_x, self.pad_x), pady=(0, self.pad_y))
+        
         # TTS Button
         self.ttsbutton = tk.Button(origin_option_frame, text="OriginText TTS Play", overrelief="solid", command=self.ttsplay)
-        self.ttsbutton.grid(row=0, column=1, padx=(self.pad_x, self.pad_x), pady=(0, self.pad_y))
+        self.ttsbutton.grid(row=0, column=2, padx=(self.pad_x, self.pad_x), pady=(0, self.pad_y))
         
         # LanguageSelect Combobox
         self.combobox_frame = tk.LabelFrame(self.root, text="select language")
@@ -96,6 +102,8 @@ class resultwindows:
         self.origintext.insert(tk.END, text)
         self.origintext.config(state="disabled")
         self.origin_text = text
+        if self.clipboardValue:
+            clipboard.copy(text)
     
     def disable_origin(self):
         if self.disableValue:
