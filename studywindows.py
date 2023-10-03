@@ -20,8 +20,12 @@ class studywindow:
         self.origintext.config(font=('TkDefaultFont', 16))
         self.origintext.pack()
         
+        cliptext = clipboard.paste()
+        if "Unhandled Exception: EXCEPTION_ACCESS_VIOLATION" in cliptext:
+            cliptext = ""
+        
         self.origintext.delete("1.0", tk.END)
-        self.origintext.insert(tk.END, clipboard.paste())
+        self.origintext.insert(tk.END, cliptext)
         
         self.trans_info = tk.Label(self.addwordwindow, text="Translated Text")
         self.trans_info.pack()
