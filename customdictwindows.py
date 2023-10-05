@@ -16,6 +16,8 @@ class customwindows:
             line = f.readline()
             if not line:
                 break
+            if line == "": # 빈 라인 제외
+                continue
             if line[:2] == "//": # 주석부분은 제외
                 continue
             origin, trans = line.split('\t')
@@ -50,19 +52,49 @@ class customwindows:
         self.addbutton.grid(row=0, column=4, padx=(0, 5), pady=(10, 10))
         
         def changefunction():
-            pass
+            try:
+                curItem = self.dicttable.focus()
+            except:
+                return
+            o_input, t_input = self.dicttable.item(curItem)['values']
+            co_input, ct_input = self.origininput.get("1.0", tk.END)[:-1], self.transinput.get("1.0", tk.END)[:-1]
+            tmpDict = CustomDict.CustomDict()
+            tmpDict.changeDict(o_input, t_input, co_input, ct_input)
+            self.dicttable.item(curItem, text="", values=(co_input, ct_input))
         
-        self.changebutton = tk.Button(addwordframe, text="변경")
+        self.changebutton = tk.Button(addwordframe, text="변경", command=changefunction)
         self.changebutton.grid(row=0, column=5, padx=(0, 5), pady=(10, 10))
         
         def deletefunction():
-            pass
+            try:
+                curItem = self.dicttable.focus()
+            except:
+                return
+            o_input, t_input = self.dicttable.item(curItem)['values']
+            tmpDict = CustomDict.CustomDict()
+            tmpDict.removeDict(o_input, t_input)
+            selected_item = self.dicttable.selection()[0] ## get selected item
+            self.dicttable.delete(selected_item)
+            self.origininput.delete("1.0", "end")
+            self.transinput.delete("1.0", "end")
         
-        self.deletebutton = tk.Button(addwordframe, text="삭제")
+        self.deletebutton = tk.Button(addwordframe, text="삭제", command=deletefunction)
         self.deletebutton.grid(row=0, column=6, padx=(0, 5), pady=(10, 10))
+        
+        def dicttableclick(event):
+            item = self.dicttable.identify('item', event.x, event.y)
+            try:
+                o_input, t_input = self.dicttable.set(item).values()
+            except:
+                return
+            self.origininput.delete("1.0", "end")
+            self.origininput.insert("1.0", o_input)
+            self.transinput.delete("1.0","end")
+            self.transinput.insert("1.0", t_input)
         
         # 원문 - 번역문 테이블 생성
         self.dicttable = ttk.Treeview(self.root, columns=["Origin Text", "Translated Text"], displaycolumns=["Origin Text", "Translated Text"])
+        self.dicttable.bind("<Button-1>", dicttableclick)
         self.dicttable.pack()
         
         self.dicttable.column("Origin Text", width="200", anchor="center")
