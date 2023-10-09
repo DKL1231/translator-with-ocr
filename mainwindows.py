@@ -5,6 +5,7 @@ import ezOCR
 import googletranslator
 import resultwindows
 import selectwindowsEx
+import customdictwindows
 from PIL import ImageTk
 import time
 import threading
@@ -19,6 +20,7 @@ class mainwindows:
         self.resultwindow = None
         self.selectwindow = None
         self.transsettingwindow = None
+        self.customdictwindow = None
         
         # variables for loop
         self.x, self.y, self.width, self.height = None, None, None, None
@@ -38,7 +40,7 @@ class mainwindows:
         
         self.root = tk.Tk()
         self.root.title("Main window")
-        self.root.geometry("200x100+50+50")
+        self.root.geometry("200x130+50+50")
         #icon = ImageTk.PhotoImage(file="icon\\icon1.jpg")
         #self.root.iconphoto(False, icon)
         
@@ -48,6 +50,7 @@ class mainwindows:
         self.menu.insert(0, "Open Selectbox")
         self.menu.insert(1, "Open ResultWindow")
         self.menu.insert(2, "Open Translate Setting")
+        self.menu.insert(3, "Open CustomDict")
         self.menu.pack(padx=(self.pad_x,self.pad_x), pady=(self.pad_x, self.pad_x))
         
         
@@ -60,7 +63,8 @@ class mainwindows:
                 index_to_func = {
                     0:self.selectThreadOn,
                     1:self.resultThreadOn,
-                    2:self.openTranslateSetting
+                    2:self.openTranslateSetting,
+                    3:self.openCustomDict
                 }
                 
                 if selected_index in index_to_func:
@@ -139,6 +143,16 @@ class mainwindows:
         clickmode.grid(row=2, column=1)
         
         self.transsettingwindow.mainloop()
+    
+    def openCustomDict(self):
+        try:
+            if self.customdictwindow:
+                self.customdictwindow.destroy()
+        except:
+            pass
+        self.customdictwindow = customdictwindows.customwindows()
+        self.customdictwindow.root.mainloop()
+
     
     def mainThread(self):
         while True:
