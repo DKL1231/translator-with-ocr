@@ -1,5 +1,8 @@
 class CustomDict:
     CustomDict = {}
+    ProcessDict = {}
+    process_num = 1
+    process_alpha = 0
     def __init__(self):
         self.filename = "CustomDict/CustomDict.txt"
         self.encoding = 'UTF-8'
@@ -69,10 +72,24 @@ class CustomDict:
     def sentenceProcessing(self, sentence):
         newsentence = sentence
         for key, value in CustomDict.CustomDict.items():
+            process_code = f'_{chr(65+CustomDict.process_alpha)}{CustomDict.process_num}'
+            newsentence = newsentence.replace(key, process_code)
+            CustomDict.ProcessDict[process_code] = value
+            CustomDict.process_num += 1
+            if CustomDict.process_num == 100:
+                CustomDict.process_num = 1
+                CustomDict.process_alpha += 1
+        return newsentence
+
+    def sentenceProcessing_reverse(self, sentence):
+        newsentence = sentence
+        for key, value in CustomDict.ProcessDict.items():
             newsentence = newsentence.replace(key, value)
         return newsentence
 
-
 if __name__ == "__main__":
     customdict = CustomDict()
-    print(customdict.sentenceProcessing("天ちゃんがめぐるちゃんに向けて言った。"))
+    process1 = customdict.sentenceProcessing("天ちゃんがめぐるちゃんに向けて言った。")
+    print(process1)
+    process2 = customdict.sentenceProcessing_reverse(process1)
+    print(process2)

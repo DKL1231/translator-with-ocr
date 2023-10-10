@@ -6,6 +6,7 @@ import googletranslator
 import resultwindows
 import selectwindowsEx
 import customdictwindows
+import CustomDict
 from PIL import ImageTk
 import time
 import threading
@@ -33,6 +34,7 @@ class mainwindows:
         
         self.trans_from, self.trans_to = self.translator.src, self.translator.dest
         self.sleeptime = 0.3
+        self.customdict = CustomDict.CustomDict()
         
         #------------ mainwindow UI --------------#
         self.pad_x = 15
@@ -200,7 +202,9 @@ class mainwindows:
                 self.before_text = origin_text
                 self.resultwindow.input_origin(origin_text)
 
-                trans_text = self.translator.translate(origin_text)
+                processed_text = self.customdict.sentenceProcessing(origin_text)
+                trans_text = self.translator.translate(processed_text)
+                trans_text = self.customdict.sentenceProcessing_reverse(trans_text)
                 self.resultwindow.input_trans(trans_text)
             # Adjust the sleep time to control the capture frequency
             time.sleep(self.sleeptime)
