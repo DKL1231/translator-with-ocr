@@ -71,7 +71,20 @@ class mainwindows:
                     index_to_func[selected_index]()
         
         self.menu.bind("<Double-Button-1>", on_double_click)
-    
+    """
+    def selectThreadOn(self):
+        if self.selectwindow is None:
+            self.selectwindow = selectwindowsEx.ResizableWindow()
+        else:
+            try:
+                self.selectwindow.__del__()
+            except:
+                pass
+            finally:
+                self.selectwindow = selectwindowsEx.ResizableWindow()
+        self.selectwindow.start()
+        
+    """
     def selectThreadOn(self):
         self.selectthread = threading.Thread(target=self.selectWindowThread)
         self.selectthread.start()
@@ -86,12 +99,9 @@ class mainwindows:
                 pass
             finally:
                 self.selectwindow = selectwindowsEx.ResizableWindow()
-        while True:
-            if self.selectwindow.isStopped:
-                break
-            self.x, self.y, self.width, self.height = self.selectwindow.get_window_position_and_size()
-            self.selectwindow.start()
-            time.sleep(self.sleeptime)
+        
+        self.x, self.y, self.width, self.height = self.selectwindow.get_window_position_and_size()
+        self.selectwindow.start()
     
     def resultThreadOn(self):
         self.resultthread = threading.Thread(target=self.openResultWindow)
@@ -159,6 +169,7 @@ class mainwindows:
             if self.resultwindow.isStopped:
                 break
             try:
+                self.x, self.y, self.width, self.height = self.selectwindow.get_window_position_and_size()
                 screenshot = pyautogui.screenshot(region=(self.x, self.y, self.width, self.height))
             except:
                 break

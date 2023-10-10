@@ -143,9 +143,9 @@ class ResizableWindow:
 
     def start(self):
         # Start the Tkinter main loop
-        self.root.update_idletasks()
-        self.root.update()
-        #self.root.mainloop()
+        #self.root.update_idletasks()
+        #self.root.update()
+        self.root.mainloop()
     
     def __del__(self):
         try:
