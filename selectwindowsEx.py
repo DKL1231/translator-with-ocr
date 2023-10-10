@@ -77,6 +77,14 @@ class ResizableWindow:
         self.alpha = alpha
         self.root.update_idletasks()
 
+    def set_height(self, height):
+        self.root.geometry(f"{self.width}x{height}")
+        self.height = height
+    
+    def set_width(self, width):
+        self.root.geometry(f"{width}x{self.height}")
+        self.width = width
+    
     def on_press(self, key):
         try:
             if key.char == 's':
@@ -92,48 +100,43 @@ class ResizableWindow:
         #icon = ImageTk.PhotoImage(file="icon\\icon1.jpg")
         #settings_window.iconphoto(False, icon)
         padding_y = 5
-        '''
-        alpha_label = tk.Label(settings_window, text="Alpha Level (0.0 - 1.0):")
-        alpha_label.pack()
-        alpha_emergency = tk.Label(settings_window, text="When you cannot find window, press s")
-        alpha_emergency.pack()
-        def apply_alpha(event):
-            alpha = alpha_slider.get()
-            self.set_alpha(alpha)
+        
+        size_label = tk.LabelFrame(settings_window, text="Window Size")
+        size_label.pack(pady=10, padx=10, expand=True, fill="both")
+        
+        width_label = tk.Label(size_label, text="Width(0-1600px)")
+        width_label.pack()
+        
+        def apply_width(event):
+            width = int(width_slider.get())
+            self.set_width(width)
 
-        alpha_slider = ttk.Scale(
-            settings_window,
+        width_slider = ttk.Scale(
+            size_label,
             from_ = 0,
-            to = 1,
+            to = 1600,
             orient = 'horizontal',
-            command=apply_alpha
+            command=apply_width
         )
-        alpha_slider.pack(pady=padding_y)
-        alpha_slider.set(self.alpha)
-        '''
-        size_label = tk.Label(settings_window, text="Window Size (WxH):")
-        size_label.pack()
+        width_slider.pack(pady=padding_y, padx=10, expand=True, fill="both")
+        width_slider.set(self.width)
+        
+        height_label = tk.Label(size_label, text="Height(0-800px)")
+        height_label.pack()
+        
+        def apply_height(event):
+            height = int(height_slider.get())
+            self.set_height(height)
 
-        size_entry = tk.Entry(settings_window)
-        size_entry.pack()
-
-        def apply_size():
-            size_str = size_entry.get()
-            try:
-                width, height = map(int, size_str.split('x'))
-                if width > 0 and height > 0:
-                    self.root.geometry(f"{width}x{height}")
-                    self.root.update_idletasks()  # Ensure that window info is up to date
-                    widhei, x, y = self.root.geometry().split('+')
-                    width, height = widhei.split('x')
-                    self.x, self.y, self.width, self.height = int(x), int(y), int(width), int(height)
-                else:
-                    messagebox.showerror("Invalid Value", "Width and height must be greater than 0")
-            except ValueError:
-                messagebox.showerror("Invalid Value", "Please enter a valid size in WxH format")
-
-        size_apply_button = tk.Button(settings_window, text="Apply Size", command=apply_size)
-        size_apply_button.pack()
+        height_slider = ttk.Scale(
+            size_label,
+            from_ = 0,
+            to = 1000,
+            orient = 'horizontal',
+            command=apply_height
+        )
+        height_slider.pack(pady=padding_y, padx=10, expand=True, fill="both")
+        height_slider.set(self.height)
 
         # Add border-related settings here if needed
         '''
