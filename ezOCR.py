@@ -2,6 +2,7 @@ import easyocr
 import os
 from PIL import Image
 import numpy as np
+import imageprocessing
 
 class TextExtractionApp:
     def __init__(self):
@@ -15,9 +16,11 @@ class TextExtractionApp:
         #path = os.getcwd() + '\\unuploadtogithub\\testimg\\'
         #filename = 'testimg1.png'
         image_path = path+filename
-        img = Image.open(image_path)
-        img = np.array(img)
-
+        #img = Image.open(image_path)
+        #img = np.array(img)
+        
+        img = imageprocessing.preprocess(image_path)
+        
         text = self.reader.readtext(img, detail=0)
         return text
     

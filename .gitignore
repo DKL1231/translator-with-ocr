@@ -1,4 +1,8 @@
 *.png
 *.txt
+openaitranslator.py
 unuploadtogithub/
 CustomDict/
+playsound/
+study/
+captureimg/

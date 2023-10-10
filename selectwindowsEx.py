@@ -10,16 +10,24 @@ class ResizableWindow:
         self.root = tk.Tk()
         self.root.wm_attributes("-topmost", 1)
         self.root.overrideredirect(True)  # Remove window decorations (top bar)
-        self.alpha = 0.4
+        self.alpha = 1
         self.root.attributes("-alpha", self.alpha)
         self.prev_x, self.prev_y = None, None
         self.isStopped = False
-        
+
         self.listener = keyboard.Listener(on_press=self.on_press)
         self.listener.start()
-        
+
+        # Create a frame to act as the outline
+        self.outline_frame = tk.Frame(self.root, bg="black", borderwidth=3, relief="solid", highlightthickness=0)
+        self.outline_frame.pack(fill=tk.BOTH, expand=True)
+        self.outline_frame.bind("<ButtonPress-1>", self.on_left_click)
+        self.outline_frame.bind("<B1-Motion>", self.on_left_drag)
+        self.outline_frame.bind("<Button-3>", self.on_right_click)
+
         # Create a canvas to capture mouse events
-        self.canvas = tk.Canvas(self.root, bg="white")
+        self.canvas = tk.Canvas(self.outline_frame, bg='white')
+        self.root.wm_attributes("-transparentcolor", 'white')
         self.canvas.pack(fill=tk.BOTH, expand=True)
         self.canvas.bind("<ButtonPress-1>", self.on_left_click)
         self.canvas.bind("<B1-Motion>", self.on_left_drag)
@@ -36,7 +44,7 @@ class ResizableWindow:
         x, y = (screen_width - window_width) // 2, (screen_height - window_height) // 2
         self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
         self.x, self.y, self.width, self.height = x, y, window_width, window_height
-        
+
         # Allow the window to be resizable
         self.root.resizable(True, True)
 
@@ -72,8 +80,8 @@ class ResizableWindow:
     def on_press(self, key):
         try:
             if key.char == 's':
-                self.alpha = 0.4
-                self.set_alpha(0.4)
+                self.alpha = 1
+                self.set_alpha(1)
         except:
             pass
 
@@ -84,7 +92,7 @@ class ResizableWindow:
         #icon = ImageTk.PhotoImage(file="icon\\icon1.jpg")
         #settings_window.iconphoto(False, icon)
         padding_y = 5
-        
+        '''
         alpha_label = tk.Label(settings_window, text="Alpha Level (0.0 - 1.0):")
         alpha_label.pack()
         alpha_emergency = tk.Label(settings_window, text="When you cannot find window, press s")
@@ -102,7 +110,7 @@ class ResizableWindow:
         )
         alpha_slider.pack(pady=padding_y)
         alpha_slider.set(self.alpha)
-
+        '''
         size_label = tk.Label(settings_window, text="Window Size (WxH):")
         size_label.pack()
 
