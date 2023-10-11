@@ -191,7 +191,7 @@ class mainwindows:
                 origin_text = [""]
             if len(origin_text[0])<10:
                 if len(origin_text) > 1:
-                    origin_text = origin_text[0]+"\n"+" ".join(origin_text[1:])
+                    origin_text = origin_text[0]+"\n"+"".join(origin_text[1:])
                 else:
                     origin_text = origin_text[0]
             else:

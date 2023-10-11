@@ -67,7 +67,6 @@ class CustomDict:
             
             if not origin in CustomDict.CustomDict:
                 CustomDict.CustomDict[origin] = trans
-            #print(origin, CustomDict.CustomDict[origin])
 
     def sentenceProcessing(self, sentence):
         newsentence = sentence
@@ -76,7 +75,7 @@ class CustomDict:
             newsentence = newsentence.replace(key, process_code)
             CustomDict.ProcessDict[process_code] = value
             CustomDict.process_num += 1
-            if CustomDict.process_num == 100:
+            if CustomDict.process_num == 10:
                 CustomDict.process_num = 1
                 CustomDict.process_alpha += 1
         return newsentence
@@ -85,6 +84,7 @@ class CustomDict:
         newsentence = sentence
         for key, value in CustomDict.ProcessDict.items():
             newsentence = newsentence.replace(key, value)
+        CustomDict.ProcessDict = {}
         return newsentence
 
 if __name__ == "__main__":
