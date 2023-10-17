@@ -53,6 +53,7 @@ class mainwindows:
         self.menu.insert(1, "Open ResultWindow")
         self.menu.insert(2, "Open Translate Setting")
         self.menu.insert(3, "Open CustomDict")
+        self.menu.insert(4, "Open Review Note")
         self.menu.pack(padx=(self.pad_x,self.pad_x), pady=(self.pad_x, self.pad_x))
         
         
@@ -96,6 +97,7 @@ class mainwindows:
             self.selectwindow = selectwindowsEx.ResizableWindow()
         else:
             try:
+                self.selectwindow.root.destroy()
                 self.selectwindow.__del__()
             except:
                 pass
@@ -117,6 +119,7 @@ class mainwindows:
             self.resultwindow.start()
         else:
             try:
+                self.resultwindow.root.destroy()
                 self.resultwindow.__del__()
             except:
                 pass
@@ -135,24 +138,6 @@ class mainwindows:
             pass
         self.transsettingwindow = tk.Tk()
         self.transsettingwindow.title("TranslateSetting")
-        
-        textmodeLabel = tk.Label(self.transsettingwindow, text="Translate mode Select")
-        textmodeLabel.grid(row=1, column=0, columnspan=2)
-        
-        def mode_change():
-            if textmode.get() == 0:
-                self.automode = True
-            else:
-                self.automode = False
-                
-        
-        textmode = tk.StringVar()
-        
-        automode = ttk.Radiobutton(self.transsettingwindow, text="Auto", variable=textmode, value="Auto", command=mode_change)
-        clickmode = ttk.Radiobutton(self.transsettingwindow, text="Click", variable=textmode, value="Click", command=mode_change)
-        
-        automode.grid(row=2, column=0)
-        clickmode.grid(row=2, column=1)
         
         self.transsettingwindow.mainloop()
     

@@ -138,20 +138,6 @@ class ResizableWindow:
         height_slider.pack(pady=padding_y, padx=10, expand=True, fill="both")
         height_slider.set(self.height)
 
-        # Add border-related settings here if needed
-        '''
-        borderColor_label = tk.Label(settings_window, text="Change color of border")
-        borderColor_label.pack()
-        
-        def change_color():
-            global colors
-            colors = askcolor(title="Color Chooser")
-        
-        borderColor_button = ttk.Button(settings_window, text='Open Color Chooser', command=change_color)
-        borderColor_button['padding'] = (5, 5)
-        borderColor_button.pack(pady=padding_y)
-        '''
-
     def start(self):
         # Start the Tkinter main loop
         #self.root.update_idletasks()
