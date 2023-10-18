@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
+import random
+import time
 
 class reviewwindows:
     def __init__(self):
@@ -23,7 +25,7 @@ class reviewwindows:
             print(origin, trans, score, correct, total)
             self.reviewnote.append([score, origin, trans, correct, total[:-1]])
         
-        f.close
+        f.close()
         
         tableLabel = tk.Label(self.root, text="ReviewNote")
         tableLabel.pack(pady=(10, 10))
@@ -74,7 +76,7 @@ class reviewwindows:
                 curItem = self.reviewtable.focus()
             except:
                 return
-            o_input, t_input, correct_input, total_input = self.dicttable.item(curItem)['values']
+            o_input, t_input, correct_input, total_input = self.reviewtable.item(curItem)['values']
             selected_item = self.reviewtable.selection()[0] ## get selected item
             self.reviewtable.delete(selected_item)
             self.origininput.delete("1.0", "end")
@@ -84,7 +86,7 @@ class reviewwindows:
         self.deletebutton = tk.Button(addwordframe, text="삭제", command=deletefunction)
         self.deletebutton.grid(row=0, column=8, padx=(0, 5), pady=(10, 10))
 
-        def dicttableclick(event):
+        def reviewtableclick(event):
             item = self.reviewtable.identify('item', event.x, event.y)
             try:
                 o_input, t_input = self.reviewtable.set(item).values()
@@ -98,7 +100,7 @@ class reviewwindows:
         
         # 원문 - 번역문 테이블 생성
         self.reviewtable = ttk.Treeview(self.root, columns=["Origin Text", "Translated Text", "Correct", "Total"], displaycolumns=["Origin Text", "Translated Text", "Correct", "Total"])
-        self.reviewtable.bind("<Button-1>", dicttableclick)
+        self.reviewtable.bind("<Button-1>", reviewtableclick)
         self.reviewtable.pack()
         
         self.reviewtable.column("Origin Text", width="192", anchor="center")
@@ -121,6 +123,97 @@ class reviewwindows:
             except:
                 pass
         
+        self.testbutton = tk.Button(self.root, text="Review Test", command=self.teststart)
+        self.testbutton.pack(pady=(10, 10))
+        
+    def teststart(self):
+        random.seed(time.time())
+        self.idxlst = [i for i in range(min(20, len(self.reviewnote)))]
+        random.shuffle(self.idxlst)
+        if len(self.reviewnote) < 20:
+            testnote = sorted(self.reviewnote)
+        testnote = sorted(self.reviewnote)[:20]
+        
+        testwindow = tk.Tk()
+        testwindow.title("ReviewTest")
+        testwindow.geometry("300x100")
+        
+        def testchanger():
+            if self.testinput.get("1.0", tk.END)[:-1] == testnote[self.idxlst[self.idx-1]][2]:
+                self.score += 1
+                self.corrected.append(testnote[self.idxlst[self.idx-1]])
+                print(self.corrected)
+            else:
+                self.wrong.append(testnote[self.idxlst[self.idx-1]])
+                print(self.wrong)
+            if self.idx == len(self.idxlst):
+                print(self.corrected)
+                print(self.wrong)
+                for data in self.corrected:
+                    data = [((int(data[3])+1)*100/(int(data[4])+1))//1, data[1], data[2], int(data[3])+1, int(data[4])+1]
+                    self.updatescore(data)
+                print()
+                for data in self.wrong:
+                    data = [((int(data[3]))*100/(int(data[4])+1))//1, data[1], data[2], data[3], int(data[4])+1]
+                    self.updatescore(data)
+                
+                for i in self.reviewtable.get_children():
+                    self.reviewtable.delete(i)
+                
+                f = open(self.filename, "r", encoding = "UTF-8")
+                self.reviewnote = []
+                while True:
+                    line = f.readline()
+                    if not line:
+                        break
+                    if line == "":
+                        continue
+                    if line[:2] == "//":
+                        continue
+                    origin, trans, score, correct, total = line.split('\t')
+                    self.reviewnote.append([score, origin, trans, correct, total[:-1]])
+                f.close()
+                
+                for _, [score, origin, trans, correct, total] in enumerate(self.reviewnote):
+                    try:
+                        self.reviewtable.insert("", "end", text="", values=(origin, trans, correct, total), iid = origin)
+                    except:
+                        pass
+                testwindow.destroy()
+                return
+            self.idx += 1
+            self.testLabel.config(text=f"{self.idx}. {testnote[self.idxlst[self.idx-1]][1]}의 뜻은?")
+            self.testinput.delete("1.0", "end")
+        
+        self.idx = 1
+        self.score = 0
+        self.testLabel = tk.Label(testwindow, text=f"{self.idx}. {testnote[self.idxlst[self.idx-1]][1]}의 뜻은?")
+        self.testLabel.pack(pady=10)
+        self.testinput = tk.Text(testwindow, width=10, height=1)
+        self.testinput.pack(pady=10)
+        self.submitbutton = tk.Button(testwindow, text="Submit", command=testchanger)
+        self.submitbutton.pack()
+        
+        self.corrected = []
+        self.wrong = []
+        
+    def updatescore(self, data):
+        s_change = f"{data[1]}\t{data[2]}\t"
+        s_insert = f"{data[1]}\t{data[2]}\t{data[0]}\t{data[3]}\t{data[4]}\n"
+        new_t = ""
+        with open(self.filename, "r", encoding="UTF-8") as f:
+            while True:
+                line = f.readline()
+                if not line:
+                    break
+                if s_change in line:
+                    new_s = s_insert
+                else:
+                    new_s = line
+                if new_s:
+                    new_t += new_s
+        with open(self.filename,'w', encoding="UTF-8") as f:
+            f.write(new_t)
     
     def addnote(self, origin, trans):
         f = open(self.filename, "a", encoding = "UTF-8")
