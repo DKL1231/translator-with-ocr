@@ -131,6 +131,9 @@ class reviewwindows:
     
     def teststart(self):
         self.reviewnoteupdate()
+        if len(self.reviewnote) == 0:
+            tk.messagebox.showerror(title="Error", message="출제할 단어가 존재하지 않습니다.")
+            return
         random.seed(time.time())
         self.idxlst = [i for i in range(min(20, len(self.reviewnote)))]
         random.shuffle(self.idxlst)
