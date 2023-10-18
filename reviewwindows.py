@@ -10,22 +10,8 @@ class reviewwindows:
         self.root.title("Review Note")
         self.root.geometry("600x400")
         self.filename = "study/reviewnote.txt"
-        f = open(self.filename, "r", encoding = "UTF-8")
-        self.reviewnote = []
         
-        while True:
-            line = f.readline()
-            if not line:
-                break
-            if line == "":
-                continue
-            if line[:2] == "//":
-                continue
-            origin, trans, score, correct, total = line.split('\t')
-            print(origin, trans, score, correct, total)
-            self.reviewnote.append([score, origin, trans, correct, total[:-1]])
-        
-        f.close()
+        self.reviewnoteupdate()
         
         tableLabel = tk.Label(self.root, text="ReviewNote")
         tableLabel.pack(pady=(10, 10))
@@ -125,8 +111,26 @@ class reviewwindows:
         
         self.testbutton = tk.Button(self.root, text="Review Test", command=self.teststart)
         self.testbutton.pack(pady=(10, 10))
+    
+    def reviewnoteupdate(self):
+        f = open(self.filename, "r", encoding = "UTF-8")
+        self.reviewnote = []
         
+        while True:
+            line = f.readline()
+            if not line:
+                break
+            if line == "":
+                continue
+            if line[:2] == "//":
+                continue
+            origin, trans, score, correct, total = line.split('\t')
+            print(origin, trans, score, correct, total)
+            self.reviewnote.append([score, origin, trans, correct, total[:-1]])
+        f.close()
+    
     def teststart(self):
+        self.reviewnoteupdate()
         random.seed(time.time())
         self.idxlst = [i for i in range(min(20, len(self.reviewnote)))]
         random.shuffle(self.idxlst)
@@ -159,26 +163,14 @@ class reviewwindows:
                 
                 for i in self.reviewtable.get_children():
                     self.reviewtable.delete(i)
-                
-                f = open(self.filename, "r", encoding = "UTF-8")
-                self.reviewnote = []
-                while True:
-                    line = f.readline()
-                    if not line:
-                        break
-                    if line == "":
-                        continue
-                    if line[:2] == "//":
-                        continue
-                    origin, trans, score, correct, total = line.split('\t')
-                    self.reviewnote.append([score, origin, trans, correct, total[:-1]])
-                f.close()
-                
+                self.reviewnoteupdate()
                 for _, [score, origin, trans, correct, total] in enumerate(self.reviewnote):
                     try:
                         self.reviewtable.insert("", "end", text="", values=(origin, trans, correct, total), iid = origin)
                     except:
                         pass
+                
+                tk.messagebox.showinfo(title="Result", message=f"{len(self.idxlst)}문제 중 {self.score}문제 맞추셨습니다.")
                 testwindow.destroy()
                 return
             self.idx += 1
