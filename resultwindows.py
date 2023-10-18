@@ -5,6 +5,7 @@ import googletrans
 from gtts import gTTS
 import playsound
 import clipboard
+import CustomDict
 
 class resultwindows:
     def __init__(self):
@@ -130,7 +131,10 @@ class resultwindows:
         return lang_from, lang_to
     
     def ttsplay(self):
-        tts = gTTS(text=self.origin_text, lang=self.from_lang_list[self.combobox_from.get()])
+        tmp = CustomDict.CustomDict()
+        ttstext = tmp.sentenceProcessing_TTS(self.origin_text)
+        print(ttstext)
+        tts = gTTS(text=ttstext, lang=self.from_lang_list[self.combobox_from.get()])
         tts.save("playsound/temp.mp3")
         playsound.playsound("playsound/temp.mp3")
     
