@@ -39,6 +39,8 @@ class reviewwindows:
             except:
                 tk.messagebox.showwarning(title="입력 에러", message="해당 원문은 이미 존재합니다.")
                 return
+            self.origininput.delete("1.0", "end")
+            self.transinput.delete("1.0", "end")
             self.addnote(o_input, t_input)
         
         self.addbutton = tk.Button(addwordframe, text="추가", command=addfunction)
@@ -52,6 +54,8 @@ class reviewwindows:
             o_input, t_input, correct_input, total_input = self.reviewtable.item(curItem)['values']
             co_input, ct_input = self.origininput.get("1.0", tk.END)[:-1], self.transinput.get("1.0", tk.END)[:-1]
             self.reviewtable.item(curItem, text="", values=(co_input, ct_input, correct_input, total_input))
+            self.origininput.delete("1.0", "end")
+            self.transinput.delete("1.0", "end")
             self.changenote(o_input, t_input, co_input, ct_input)
         
         self.changebutton = tk.Button(addwordframe, text="변경", command=changefunction)
@@ -75,7 +79,7 @@ class reviewwindows:
         def reviewtableclick(event):
             item = self.reviewtable.identify('item', event.x, event.y)
             try:
-                o_input, t_input = self.reviewtable.set(item).values()
+                o_input, t_input, _, __ = self.reviewtable.set(item).values()
             except:
                 return
             self.origininput.delete("1.0", "end")
