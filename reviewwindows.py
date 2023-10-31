@@ -12,6 +12,7 @@ class reviewwindows:
         self.filename = "study/reviewnote.txt"
         
         self.reviewnoteupdate()
+        self.suddenpercent = 0.3
         
         tableLabel = tk.Label(self.root, text="ReviewNote")
         tableLabel.pack(pady=(10, 10))
@@ -173,7 +174,13 @@ class reviewwindows:
                     except:
                         pass
                 
-                tk.messagebox.showinfo(title="Result", message=f"{len(self.idxlst)}문제 중 {self.score}문제 맞추셨습니다.")
+                resultmessage = f"{len(self.idxlst)}문제 중 {self.score}문제 맞추셨습니다."
+                if self.idxlst != self.score:
+                    resultmessage += "\n틀린 문제는"
+                    for data in self.wrong:
+                        resultmessage += f"\n{data[1]}\t{data[2]}"
+                    resultmessage += "\n입니다."
+                tk.messagebox.showinfo(title="Result", message=resultmessage)
                 testwindow.destroy()
                 return
             self.idx += 1
@@ -251,6 +258,48 @@ class reviewwindows:
         with open(self.filename, "w", encoding="UTF-8") as f:
             f.write(new_t)
 
+    def checksentence(self, sentence):
+        self.reviewnoteupdate()
+        for [score, origin, trans, correct, total] in self.reviewnote:
+            if origin in sentence:
+                random.seed(time.time())
+                if random.uniform(0, 1) <= self.suddenpercent:
+                    self.createsuddenwindow([score, origin, trans, correct, total])
+
+    def createsuddenwindow(self, lst):
+        [score, origin, trans, correct, total] = lst
+        suddenwindow = tk.Tk()
+        suddenwindow.title("SuddenTest")
+        suddenwindow.geometry("300x100")
+        
+        def singletest():
+            data = lst
+            if testinput.get("1.0", tk.END)[:-1] == trans:
+                tk.messagebox.showinfo(title="Correct!", message="정답입니다.")
+                data = [((int(data[3])+1)*100/(int(data[4])+1))//1, data[1], data[2], int(data[3])+1, int(data[4])+1]
+                suddenwindow.destroy()
+            else:
+                tk.messagebox.showinfo(title="Wrong!", message=f"틀렸습니다.\n정답은 {trans}입니다.")
+                data = [((int(data[3]))*100/(int(data[4])+1))//1, data[1], data[2], data[3], int(data[4])+1]
+                suddenwindow.destroy()
+            self.updatescore(data)
+            for i in self.reviewtable.get_children():
+                self.reviewtable.delete(i)
+            self.reviewnoteupdate()
+            for _, [score, origin, trans, correct, total] in enumerate(self.reviewnote):
+                try:
+                    self.reviewtable.insert("", "end", text="", values=(origin, trans, correct, total), iid = origin)
+                except:
+                    pass
+        
+        testLabel = tk.Label(suddenwindow, text=f"{origin}의 뜻은?")
+        testLabel.pack(pady=10)
+        testinput = tk.Text(suddenwindow, width=10, height=1)
+        testinput.pack(pady=10)
+        submitbutton = tk.Button(suddenwindow, text="Submit", command=singletest)
+        submitbutton.pack()
+        pass
+    
 if __name__ == "__main__":
     c = reviewwindows()
     c.root.mainloop()

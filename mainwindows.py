@@ -4,6 +4,7 @@ from tkinter import ttk
 import ezOCR
 import googletranslator
 import resultwindows
+import reviewwindows
 import selectwindowsEx
 import customdictwindows
 import CustomDict
@@ -22,6 +23,7 @@ class mainwindows:
         self.selectwindow = None
         self.transsettingwindow = None
         self.customdictwindow = None
+        self.reviewwindow = reviewwindows.reviewwindows()
         
         # variables for loop
         self.x, self.y, self.width, self.height = None, None, None, None
@@ -191,6 +193,7 @@ class mainwindows:
                 trans_text = self.translator.translate(processed_text)
                 trans_text = self.customdict.sentenceProcessing_reverse(trans_text)
                 self.resultwindow.input_trans(trans_text)
+                self.reviewwindow.checksentence(origin_text)
             # Adjust the sleep time to control the capture frequency
             time.sleep(self.sleeptime)
     

@@ -1,5 +1,6 @@
 *.png
 *.txt
+*.mp3
 openaitranslator.py
 unuploadtogithub/
 CustomDict/
