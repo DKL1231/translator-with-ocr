@@ -6,14 +6,16 @@ import time
 
 class reviewwindows:
     def __init__(self):
-        self.root = tk.Tk()
-        self.root.title("Review Note")
-        self.root.geometry("600x400")
         self.filename = "study/reviewnote.txt"
         
         self.reviewnoteupdate()
         self.suddenpercent = 0.3
-        
+            
+    def createwindow(self):
+        self.root = tk.Tk()
+        self.root.title("Review Note")
+        self.root.geometry("600x400")
+
         tableLabel = tk.Label(self.root, text="ReviewNote")
         tableLabel.pack(pady=(10, 10))
         
@@ -116,7 +118,9 @@ class reviewwindows:
         
         self.testbutton = tk.Button(self.root, text="Review Test", command=self.teststart)
         self.testbutton.pack(pady=(10, 10))
-    
+
+        
+        
     def reviewnoteupdate(self):
         f = open(self.filename, "r", encoding = "UTF-8")
         self.reviewnote = []
@@ -130,7 +134,7 @@ class reviewwindows:
             if line[:2] == "//":
                 continue
             origin, trans, score, correct, total = line.split('\t')
-            print(origin, trans, score, correct, total)
+            #print(origin, trans, score, correct, total)
             self.reviewnote.append([score, origin, trans, correct, total[:-1]])
         f.close()
     
@@ -154,17 +158,17 @@ class reviewwindows:
             if self.testinput.get("1.0", tk.END)[:-1] == testnote[self.idxlst[self.idx-1]][2]:
                 self.score += 1
                 self.corrected.append(testnote[self.idxlst[self.idx-1]])
-                print(self.corrected)
+                #print(self.corrected)
             else:
                 self.wrong.append(testnote[self.idxlst[self.idx-1]])
-                print(self.wrong)
+                #print(self.wrong)
             if self.idx == len(self.idxlst):
-                print(self.corrected)
-                print(self.wrong)
+                #print(self.corrected)
+                #print(self.wrong)
                 for data in self.corrected:
                     data = [((int(data[3])+1)*100/(int(data[4])+1))//1, data[1], data[2], int(data[3])+1, int(data[4])+1]
                     self.updatescore(data)
-                print()
+                #print()
                 for data in self.wrong:
                     data = [((int(data[3]))*100/(int(data[4])+1))//1, data[1], data[2], data[3], int(data[4])+1]
                     self.updatescore(data)
@@ -304,6 +308,11 @@ class reviewwindows:
         submitbutton.pack()
         pass
     
+    def destroy(self):
+        self.root.destroy()
+        self.root = None
+    
 if __name__ == "__main__":
     c = reviewwindows()
+    c.createwindow()
     c.root.mainloop()

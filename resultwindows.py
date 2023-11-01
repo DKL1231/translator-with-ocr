@@ -60,7 +60,8 @@ class resultwindows:
         self.from_lang_list = {'korean':'ko', 'japanese':'ja', 'english':'en'}
         to_lang_list = list(googletrans.LANGUAGES.values())
         self.combobox_from = ttk.Combobox(self.combobox_frame, height=5, values=list(self.from_lang_list.keys()), state="readonly")
-        self.combobox_from.current(list(self.from_lang_list.keys()).index('japanese'))
+        self.combobox_from.current(list(self.from_lang_list.keys()).index('english'))
+        #self.combobox_from.current(list(self.from_lang_list.keys()).index('japanese'))
         self.combobox_from.grid(row=1, column=1, padx=(self.pad_x, self.pad_x), pady=(self.pad_y, self.pad_y))
         
         comboboxtext = tk.Label(self.combobox_frame, text="→")

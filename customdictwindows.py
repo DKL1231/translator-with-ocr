@@ -131,7 +131,10 @@ class customwindows:
                 self.dicttable.insert("", "end", text="", values=(origin, trans, type), iid = origin)
             except:
                 pass
-        
+    
+    def destroy(self):
+        self.root.destroy()
+        self.root = None
 
 if __name__ == "__main__":
     c = customwindows()

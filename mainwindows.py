@@ -69,7 +69,8 @@ class mainwindows:
                     0:self.selectThreadOn,
                     1:self.resultThreadOn,
                     2:self.openTranslateSetting,
-                    3:self.openCustomDict
+                    3:self.openCustomDict,
+                    4:self.openReviewNote
                 }
                 
                 if selected_index in index_to_func:
@@ -114,6 +115,9 @@ class mainwindows:
         self.resultthread.start()
         
     def openResultWindow(self):
+        if self.selectwindow is None:
+            tk.messagebox.showerror(title="Error!", message="Selectwindow를 먼저 실행하시기 바랍니다.")
+            return
         if self.resultwindow is None:
             self.resultwindow = resultwindows.resultwindows()
             self.mainthread = threading.Thread(target=self.mainThread)
@@ -122,7 +126,8 @@ class mainwindows:
         else:
             try:
                 self.resultwindow.root.destroy()
-                self.resultwindow.__del__()
+                self.resultwindow.root = None
+                self.resultwindow.isStopped = True
             except:
                 pass
             finally:
@@ -152,51 +157,68 @@ class mainwindows:
         self.customdictwindow = customdictwindows.customwindows()
         self.customdictwindow.root.mainloop()
 
+    def openReviewNote(self):
+        try:
+            if self.reviewwindow:
+                self.reviewwindow.destroy()
+        except:
+            pass
+        self.reviewwindow = reviewwindows.reviewwindows()
+        self.reviewwindow.createwindow()
+        self.reviewwindow.root.mainloop()
     
     def mainThread(self):
-        while True:
-            if self.resultwindow.isStopped:
-                break
-            try:
-                self.x, self.y, self.width, self.height = self.selectwindow.get_window_position_and_size()
-                screenshot = pyautogui.screenshot(region=(self.x, self.y, self.width, self.height))
-            except:
-                break
-            screenshot.save("captureimg/window_capture.png")
+        try:
+            while True:
+                if self.resultwindow.isStopped:
+                    break
+                try:
+                    self.x, self.y, self.width, self.height = self.selectwindow.get_window_position_and_size()
+                    screenshot = pyautogui.screenshot(region=(self.x, self.y, self.width, self.height))
+                except:
+                    break
+                screenshot.save("captureimg/window_capture.png")
 
-            if (self.trans_from, self.trans_to) != self.resultwindow.return_combobox():
-                self.trans_from, self.trans_to = self.resultwindow.return_combobox()
-                self.translator.setLanguage(self.trans_from, self.trans_to)
-                self.text_extractor.setLanguage(self.trans_from)
-                self.before_text = ""
-    
-    
-    
-            # Call the extract_text_from_image method to extract text from the saved image
-            origin_text = self.text_extractor.extract_text_from_image()
-            if origin_text == []:
-                origin_text = [""]
-            if len(origin_text[0])<10:
-                if len(origin_text) > 1:
-                    origin_text = origin_text[0]+"\n"+"".join(origin_text[1:])
+                if (self.trans_from, self.trans_to) != self.resultwindow.return_combobox():
+                    self.trans_from, self.trans_to = self.resultwindow.return_combobox()
+                    self.translator.setLanguage(self.trans_from, self.trans_to)
+                    self.text_extractor.setLanguage(self.trans_from)
+                    self.before_text = ""
+        
+        
+        
+                # Call the extract_text_from_image method to extract text from the saved image
+                origin_text = self.text_extractor.extract_text_from_image()
+                if origin_text == []:
+                    origin_text = [""]
+                if len(origin_text[0])<10:
+                    if len(origin_text) > 1:
+                        origin_text = origin_text[0]+"\n"+"".join(origin_text[1:])
+                    else:
+                        origin_text = origin_text[0]
                 else:
-                    origin_text = origin_text[0]
-            else:
-                origin_text = " ".join(origin_text)
+                    origin_text = "\n".join(origin_text)
+                '''
+                else:
+                    origin_text = " ".join(origin_text)
+                '''
+                
+                
+                # Display the extracted text in the Tkinter window
+                if self.before_text != origin_text:
+                    self.before_text = origin_text
+                    self.resultwindow.input_origin(origin_text)
 
-            # Display the extracted text in the Tkinter window
-            if self.before_text != origin_text:
-                self.before_text = origin_text
-                self.resultwindow.input_origin(origin_text)
-
-                processed_text = self.customdict.sentenceProcessing(origin_text)
-                trans_text = self.translator.translate(processed_text)
-                trans_text = self.customdict.sentenceProcessing_reverse(trans_text)
-                self.resultwindow.input_trans(trans_text)
-                self.reviewwindow.checksentence(origin_text)
-            # Adjust the sleep time to control the capture frequency
-            time.sleep(self.sleeptime)
-    
+                    processed_text = self.customdict.sentenceProcessing(origin_text)
+                    trans_text = self.translator.translate(processed_text)
+                    trans_text = self.customdict.sentenceProcessing_reverse(trans_text)
+                    self.resultwindow.input_trans(trans_text)
+                    self.reviewwindow.checksentence(origin_text)
+                # Adjust the sleep time to control the capture frequency
+                time.sleep(self.sleeptime)
+        except:
+            return
+            
     def start(self):
         self.root.mainloop()
         

@@ -6,7 +6,8 @@ import imageprocessing
 
 class TextExtractionApp:
     def __init__(self):
-        self.language = ['ja'] # default : japanese
+        self.language = ['en']
+        #self.language = ['ja'] # default : japanese
         self.reader = easyocr.Reader(lang_list=self.language, gpu=True)
 
     def extract_text_from_image(self):

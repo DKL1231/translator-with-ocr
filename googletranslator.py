@@ -4,7 +4,8 @@ import CustomDict
 class googletranslator:
     def __init__(self):
         self.translator = googletrans.Translator()
-        self.src = 'ja' # default src is japanese
+        self.src = 'en'
+        #self.src = 'ja' # default src is japanese
         self.dest = 'ko' # default dest is korean
         self.CustomDict = CustomDict.CustomDict()
     
