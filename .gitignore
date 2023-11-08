@@ -7,3 +7,6 @@ CustomDict/
 playsound/
 study/
 captureimg/
+dist/
+build/
+mainwindows.spec

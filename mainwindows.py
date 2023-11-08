@@ -53,7 +53,7 @@ class mainwindows:
         self.menu = tk.Listbox(self.root, height=0, selectmode="browse", activestyle="none", font="TkDefaultFont 14")
         self.menu.insert(0, "Open Selectbox")
         self.menu.insert(1, "Open ResultWindow")
-        self.menu.insert(2, "Open Translate Setting")
+        #self.menu.insert(2, "Open Translate Setting")
         self.menu.insert(3, "Open CustomDict")
         self.menu.insert(4, "Open Review Note")
         self.menu.pack(padx=(self.pad_x,self.pad_x), pady=(self.pad_x, self.pad_x))
@@ -68,9 +68,9 @@ class mainwindows:
                 index_to_func = {
                     0:self.selectThreadOn,
                     1:self.resultThreadOn,
-                    2:self.openTranslateSetting,
-                    3:self.openCustomDict,
-                    4:self.openReviewNote
+                    #2:self.openTranslateSetting,
+                    2:self.openCustomDict,
+                    3:self.openReviewNote
                 }
                 
                 if selected_index in index_to_func:
@@ -191,17 +191,7 @@ class mainwindows:
                 origin_text = self.text_extractor.extract_text_from_image()
                 if origin_text == []:
                     origin_text = [""]
-                if len(origin_text[0])<10:
-                    if len(origin_text) > 1:
-                        origin_text = origin_text[0]+"\n"+"".join(origin_text[1:])
-                    else:
-                        origin_text = origin_text[0]
-                else:
-                    origin_text = "\n".join(origin_text)
-                '''
-                else:
-                    origin_text = " ".join(origin_text)
-                '''
+                origin_text = " ".join(origin_text)
                 
                 
                 # Display the extracted text in the Tkinter window

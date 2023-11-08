@@ -132,7 +132,7 @@ class reviewwindows:
             if line == "":
                 continue
             if line[:2] == "//":
-                continue
+                continue 
             origin, trans, score, correct, total = line.split('\t')
             #print(origin, trans, score, correct, total)
             self.reviewnote.append([score, origin, trans, correct, total[:-1]])
