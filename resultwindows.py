@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from PIL import ImageTk
+import googletranslator
 import googletrans
 from gtts import gTTS
 import playsound
@@ -19,6 +20,8 @@ class resultwindows:
         self.pad_y = 30
         self.isStopped = False
         self.origin_text = ''
+        self.customdict = CustomDict.CustomDict()
+        self.translator = googletranslator.googletranslator()
         
         # OriginText Output
         self.origin_info = tk.Label(self.root, text="Original Text")
@@ -53,6 +56,10 @@ class resultwindows:
         self.ttsbutton = tk.Button(origin_option_frame, text="OriginText TTS Play", overrelief="solid", command=self.ttsplay)
         self.ttsbutton.grid(row=0, column=2, padx=(self.pad_x, self.pad_x), pady=(0, self.pad_y))
         
+        # UpdateCustomDict Button
+        self.CustomDictButton = tk.Button(origin_option_frame, text='Update CustomDict', overrelief="solid", command=self.updateDict)
+        self.CustomDictButton.grid(row=0, column=3, padx=(self.pad_x, self.pad_x), pady=(0, self.pad_y))
+        
         # LanguageSelect Combobox
         self.combobox_frame = tk.LabelFrame(self.root, text="select language")
         self.combobox_frame.grid(row=5, pady=(0, self.pad_y))
@@ -84,6 +91,13 @@ class resultwindows:
         self.combobox_font_size.current(0)
         self.combobox_font_size.grid(row=2, padx=(self.pad_x, self.pad_x), pady=(0, self.pad_y))
         self.combobox_font_size.bind("<<ComboboxSelected>>", self.font_change)
+    
+    def updateDict(self):
+        self.customdict.updateDict()
+        processed_text = self.customdict.sentenceProcessing(self.origintext.get("1.0", tk.END)[:-1])
+        trans_text = self.translator.translate(processed_text)
+        trans_text = self.customdict.sentenceProcessing_reverse(trans_text)
+        self.input_trans(trans_text)
     
     def font_change(self, event):
         font_size = event.widget.get()
@@ -132,9 +146,7 @@ class resultwindows:
         return lang_from, lang_to
     
     def ttsplay(self):
-        tmp = CustomDict.CustomDict()
-        ttstext = tmp.sentenceProcessing_TTS(self.origin_text)
-        print(ttstext)
+        ttstext = self.customdict.sentenceProcessing_TTS(self.origin_text)
         tts = gTTS(text=ttstext, lang=self.from_lang_list[self.combobox_from.get()])
         tts.save("playsound/temp.mp3")
         playsound.playsound("playsound/temp.mp3")
@@ -152,6 +164,6 @@ class resultwindows:
 if __name__ == "__main__":
     window = resultwindows()
     print(window.return_combobox())
-    window.input_origin("天ちゃんがめぐるちゃんに向けて言った。")
-    window.input_trans("아메쨩이 메구루짱에게 말했다")
+    window.input_origin("special")
+    window.input_trans("특별한")
     window.start()

@@ -202,8 +202,8 @@ class mainwindows:
                     processed_text = self.customdict.sentenceProcessing(origin_text)
                     trans_text = self.translator.translate(processed_text)
                     trans_text = self.customdict.sentenceProcessing_reverse(trans_text)
-                    self.resultwindow.input_trans(trans_text)
                     self.reviewwindow.checksentence(origin_text)
+                    self.resultwindow.input_trans(trans_text)
                 # Adjust the sleep time to control the capture frequency
                 time.sleep(self.sleeptime)
         except:

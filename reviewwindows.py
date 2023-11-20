@@ -152,7 +152,7 @@ class reviewwindows:
         
         testwindow = tk.Tk()
         testwindow.title("ReviewTest")
-        testwindow.geometry("300x100")
+        testwindow.geometry("300x130")
         
         def testchanger():
             if self.testinput.get("1.0", tk.END)[:-1] == testnote[self.idxlst[self.idx-1]][2]:
@@ -306,7 +306,6 @@ class reviewwindows:
         testinput.pack(pady=10)
         submitbutton = tk.Button(suddenwindow, text="Submit", command=singletest)
         submitbutton.pack()
-        pass
     
     def destroy(self):
         self.root.destroy()
